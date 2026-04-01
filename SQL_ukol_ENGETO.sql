@@ -66,8 +66,7 @@ LIMIT 10;
 
 -- =====================================================
 -- Otázka 1
--- Rostou v průběhu let mzdy ve všech odvětvích,
--- nebo v některých klesají?
+-- Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?
 -- =====================================================
 
 WITH wages AS (
@@ -146,8 +145,7 @@ ORDER BY industry_name, year;
 
 -- =====================================================
 -- Otázka 2
--- Kolik litrů mléka a kilogramů chleba je možné
--- koupit za první a poslední srovnatelné období?
+-- Kolik litrů mléka a kilogramů chleba je možné koupit za první a poslední srovnatelné období?
 -- =====================================================
 
 -- Kontrola prvního a posledního společného roku
@@ -259,8 +257,7 @@ ORDER BY avg_yoy_growth_percent;
 
 -- =====================================================
 -- Otázka 3B
--- Existuje rok, ve kterém byl meziroční nárůst cen
--- potravin výrazně vyšší než růst mezd (více než 10 %)?
+-- Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (více než 10 %)?
 -- =====================================================
 
 WITH wages AS (
