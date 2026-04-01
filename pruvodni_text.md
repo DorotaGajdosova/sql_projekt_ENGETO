@@ -5,6 +5,16 @@
 V tomto projektu jsem se zaměřila na analýzu vývoje mezd a cen potravin v České republice a na to, jak spolu tyto veličiny souvisí, případně jak na ně působí ekonomický růst (HDP).
 
 ---
+##Informace o výstupních datech
+
+Při práci s daty jsem zaznamenala několik důležitých charakteristik:
+
+V některých letech nebo kategoriích potravin se nevyskytují hodnoty pro všechny kombinace rok × odvětví × potravina.
+Při výpočtech meziročních změn (pomocí funkce LAG()) chybí hodnota pro první rok každé časové řady, protože není k dispozici předchozí rok. Tyto případy byly z analýzy vyřazeny.
+V datech se nevyskytují nulové hodnoty, které by ovlivnily výpočty, nicméně pro jistotu byla použita funkce NULLIF() při dělení.
+Spojením dat o mzdách a cenách vzniká kombinace všech odvětví a všech kategorií potravin v daném roce. To bylo zohledněno při výpočtech (např. použitím DISTINCT nebo agregací).
+
+Celkově lze říci, že data jsou pro účely analýzy dostatečně kvalitní, ale je nutné brát v úvahu jejich agregovaný charakter a omezenou dostupnost některých kombinací.
 
 ## Výzkumné otázky
 
