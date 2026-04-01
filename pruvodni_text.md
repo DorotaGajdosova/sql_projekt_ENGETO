@@ -5,7 +5,7 @@
 V tomto projektu jsem se zaměřila na analýzu vývoje mezd a cen potravin v České republice a na to, jak spolu tyto veličiny souvisí, případně jak na ně působí ekonomický růst (HDP).
 
 ---
-##Informace o výstupních datech
+## Informace o výstupních datech
 
 Při práci s daty jsem zaznamenala několik důležitých charakteristik:
 
