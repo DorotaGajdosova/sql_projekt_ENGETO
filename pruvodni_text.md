@@ -1,44 +1,65 @@
+# SQL projekt – Analýza mezd, cen potravin a HDP v České republice
+
+## Cíl projektu
+
+Cílem projektu bylo vytvořit dvě výsledné tabulky sloužící k analýze dostupnosti základních potravin v České republice a k posouzení vztahu mezi vývojem mezd, cen potravin a makroekonomickými ukazateli.
+
+Na základě připravených datových podkladů byly zodpovězeny výzkumné otázky týkající se vývoje mezd, kupní síly obyvatel, vývoje cen potravin a možného vlivu HDP na mzdy a ceny potravin.
+
+---
+
+## Vytvořené tabulky
+
+### Primární tabulka
+
+Byla vytvořena tabulka:
+
+`t_dorota_gajdosova_project_sql_primary_final`
+
+Tato tabulka obsahuje:
+
+- průměrné mzdy podle jednotlivých odvětví a let,
+- průměrné ceny potravin agregované na úroveň jednotlivých let.
+
+Data byla sjednocena na společné časové období dostupné v obou zdrojových datových sadách.
+
+Při tvorbě tabulky byly využity následující zdroje:
+
+- `czechia_payroll`
+- `czechia_payroll_industry_branch`
+- `czechia_price`
+- `czechia_price_category`
+
+---
+
+### Sekundární tabulka
+
+Byla vytvořena tabulka:
+
+`t_dorota_gajdosova_project_sql_secondary_final`
+
+Tabulka obsahuje ekonomické ukazatele evropských států:
+
+- HDP,
+- GINI koeficient,
+- populaci.
+
+Data byla získána z tabulek:
+
+- `economies`
+- `countries`
+
+Pro následné analýzy vztahu mezi HDP, mzdami a cenami potravin byla využita data za Českou republiku.
+
+---
+
 ## Popis zpracování dat
 
-V tomto projektu jsem se zaměřila na analýzu vývoje mezd a cen potravin v České republice a na jejich vztah k ekonomickému vývoji reprezentovanému hrubým domácím produktem (HDP).
+Při tvorbě datových podkladů byla nejprve agregována data o mzdách a cenách potravin na úroveň jednotlivých let.
 
----
+U mezd byly vybrány pouze záznamy odpovídající průměrné hrubé mzdě a požadovanému typu výpočtu. Ceny potravin byly agregovány pomocí průměrné hodnoty za jednotlivé roky.
 
-## Informace o výstupních datech
-
-Při práci s daty jsem identifikovala několik důležitých charakteristik:
-
-* V některých letech nebo kategoriích potravin se nevyskytují všechny kombinace rok × odvětví × potravina.
-* Při výpočtech meziročních změn pomocí funkce `LAG()` chybí hodnota pro první rok časové řady, protože není k dispozici předchozí období. Tyto záznamy byly z následných analýz vyřazeny.
-* V datech se nevyskytují nulové hodnoty, nicméně pro zajištění bezpečného dělení byla použita funkce `NULLIF()`.
-* Spojením dat o mzdách a cenách vzniká kombinace všech odvětví a všech kategorií potravin v daném roce, což bylo nutné zohlednit při agregaci dat.
-
-Celkově lze konstatovat, že data jsou pro účely analýzy dostatečně kvalitní, je však nutné brát v úvahu jejich agregovaný charakter a omezenou dostupnost některých kombinací.
-
----
-
-## Výzkumné otázky
-
-V rámci projektu jsem se snažila odpovědět na následující otázky:
-
-* Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých odvětvích dochází k jejich poklesu?
-* Kolik litrů mléka a kilogramů chleba je možné koupit za průměrnou mzdu v prvním a posledním srovnatelném období?
-* Která kategorie potravin zdražuje nejpomaleji?
-* Existuje rok, ve kterém byl meziroční růst cen potravin výrazně vyšší než růst mezd (o více než 10 procentních bodů)?
-* Má vývoj HDP vliv na změny mezd a cen potravin ve stejném nebo následujícím roce?
-
----
-
-## Vytvoření primární a sekundární tabulky
-
-Nejprve jsem vytvořila tabulku `t_dorota_gajdosova_project_sql_primary_final`, která vznikla spojením:
-
-* dat o průměrných mzdách podle odvětví a roku,
-* dat o cenách potravin agregovaných na úroveň jednotlivých let.
-
-U mezd byly filtrovány pouze relevantní záznamy odpovídající průměrným mzdám a požadovanému typu výpočtu. Ceny potravin byly agregovány pomocí průměrné hodnoty za jednotlivé roky.
-
-Dále jsem vytvořila tabulku `t_dorota_gajdosova_project_sql_secondary_final`, která obsahuje ekonomické ukazatele evropských států – konkrétně HDP, GINI koeficient a populaci. Pro analýzu vztahu mezi HDP, mzdami a cenami potravin byla následně využita data za Českou republiku.
+Pro výpočty meziročních změn byla využita analytická funkce `LAG()`, která umožňuje porovnání hodnot mezi dvěma po sobě následujícími roky.
 
 ---
 
@@ -46,52 +67,71 @@ Dále jsem vytvořila tabulku `t_dorota_gajdosova_project_sql_secondary_final`, 
 
 ### Meziroční změna mezd
 
-Pro sledování vývoje mezd byla využita funkce `LAG()`, která umožňuje porovnat hodnoty mezi dvěma po sobě následujícími roky.
+Pro jednotlivá odvětví byl vypočten meziroční růst nebo pokles průměrné mzdy.
 
-### Meziroční změna cen
+### Meziroční změna cen potravin
 
-Stejný postup byl aplikován i na ceny potravin. Nejprve byly vypočteny meziroční změny pro jednotlivé kategorie potravin a následně byly tyto změny zprůměrovány podle roku.
+Pro každou kategorii potravin byl vypočten meziroční procentuální růst ceny. Následně byly tyto změny agregovány na úroveň jednotlivých let.
 
 ### Kupní síla
 
-Kupní síla byla vyjádřena jako poměr průměrné mzdy a ceny vybrané potraviny. Analýza byla provedena pro:
+Kupní síla byla vyjádřena jako poměr průměrné mzdy a ceny vybrané potraviny.
 
-* mléko,
-* chléb.
+Analýza byla provedena pro:
 
-Následně bylo porovnáno první a poslední dostupné období.
+- chléb konzumní kmínový,
+- mléko polotučné pasterované.
+
+Bylo porovnáno první a poslední společné období dostupné v datech.
 
 ### HDP a jeho vliv
 
 Pomocí sekundární tabulky byl analyzován:
 
-* vztah mezi růstem HDP a růstem mezd,
-* vztah mezi růstem HDP a růstem cen potravin,
-* zpožděný efekt HDP na vývoj mezd a cen v následujícím roce.
+- vztah mezi růstem HDP a růstem mezd ve stejném roce,
+- vztah mezi růstem HDP a růstem cen potravin ve stejném roce,
+- možný vliv růstu HDP na mzdy a ceny potravin v následujícím roce.
 
 ---
 
-## Kvalita dat a omezení
+## Informace o kvalitě dat a omezení
 
-* Data jsou agregovaná a nepředstavují hodnoty jednotlivých osob nebo domácností.
-* Některé kombinace rok × kategorie potravin se v datech nevyskytují.
-* Ceny potravin jsou zprůměrovány napříč regiony České republiky.
-* Spojením tabulek vzniká kombinace všech odvětví a kategorií potravin, což bylo nutné při interpretaci výsledků zohlednit.
+Při práci s daty byly identifikovány následující skutečnosti:
+
+- Při výpočtu meziročních změn pomocí funkce `LAG()` není pro první rok časové řady dostupná předchozí hodnota, a proto byly tyto záznamy z analýz vyloučeny.
+- Pro bezpečné dělení byla využita funkce `NULLIF()`, která zabraňuje dělení nulou.
+- Ceny potravin představují průměrné hodnoty za celou Českou republiku a nezohledňují regionální rozdíly.
+- Data jsou agregovaná a nepopisují situaci jednotlivých domácností nebo osob.
+- Spojením dat o mzdách a cenách vzniká kombinace všech odvětví a kategorií potravin v daném roce, což bylo nutné zohlednit při interpretaci výsledků.
+
+Celkově lze konstatovat, že datové sady jsou pro účely analýzy dostatečně kvalitní.
 
 ---
 
-## Shrnutí mezivýsledků
+## Výzkumné otázky
+
+V rámci projektu byly řešeny následující otázky:
+
+1. Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?
+2. Kolik litrů mléka a kilogramů chleba je možné koupit za první a poslední srovnatelné období?
+3. Která kategorie potravin zdražuje nejpomaleji?
+4. Existuje rok, ve kterém byl meziroční růst cen potravin výrazně vyšší než růst mezd?
+5. Má vývoj HDP vliv na změny mezd a cen potravin ve stejném nebo následujícím roce?
+
+---
+
+## Shrnutí výsledků
 
 Z provedené analýzy vyplynulo, že:
 
-* mzdy mají obecně rostoucí trend, přesto se v některých letech a odvětvích objevují poklesy,
-* kupní síla obyvatel se v čase mění v závislosti na vývoji mezd i cen potravin,
-* některé potraviny zdražují velmi pomalu, případně v průměru i zlevňují,
-* nebyl identifikován rok, ve kterém by ceny potravin rostly výrazně rychleji než mzdy o více než 10 procentních bodů,
-* vztah mezi HDP a vývojem mezd a cen potravin není jednoznačný.
+- mzdy mají dlouhodobě převážně rostoucí trend, přesto se v některých odvětvích a letech objevují poklesy,
+- kupní síla obyvatel se ve sledovaném období zvýšila,
+- nejpomaleji zdražující kategorií potravin byl cukr krystalový, jehož cena v průměru klesala,
+- nebyl identifikován rok, ve kterém by ceny potravin rostly o více než 10 procentních bodů rychleji než mzdy,
+- mezi růstem HDP a růstem mezd existuje určitá souvislost, zatímco vztah mezi HDP a cenami potravin je slabší.
 
 ---
 
 ## Závěr
 
-Výsledky ukazují, že vývoj mezd a cen potravin není ovlivněn pouze ekonomickým růstem. Na jejich změny působí více faktorů a vztahy mezi jednotlivými proměnnými nejsou zcela lineární.
+Výsledky ukazují, že vývoj mezd a cen potravin není ovlivněn pouze ekonomickým růstem reprezentovaným HDP. Na změny působí více faktorů a vztahy mezi jednotlivými ukazateli nejsou jednoznačné. Přesto analýza naznačuje, že růst HDP může souviset zejména s následným růstem mezd.
